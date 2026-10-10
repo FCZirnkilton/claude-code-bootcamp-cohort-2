@@ -1,0 +1,35 @@
+{
+  "part": 5,
+  "model": "sonnet",
+  "turns": [
+    {
+      "label": "Investigate before editing",
+      "prompt": "Read BUG-REPORT.md. Do not change any code yet. Reproduce BUG-101 with a failing regression test in tests/test_partial_update.py (title-only PATCH must keep the body; also cover body-only, explicit empty body and empty patch). Run it and show the failure. Then explain the most likely cause with file and line.",
+      "options": {},
+      "exit": 0,
+      "seconds": 83,
+      "stderr": "Ignoring 6 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects[\"/tmp/shipyard-rec/shipyard-05-oedlxfr1/shipyard\"].hasTrustDialogAccepted: true in /home/deploy/.claude.json.\n",
+      "session_id": "9cf45526-134f-4fb8-bbc6-10c8a3fe2255",
+      "cost_usd": 0.1290237,
+      "turns": 9,
+      "duration_ms": 56113,
+      "result_subtype": "success"
+    },
+    {
+      "label": "Measurable completion with /goal",
+      "prompt": "/goal BUG-101 is fixed with the smallest change in notes_api/service.py, python3 -m unittest discover -s tests -q exits 0 with the raw output shown, docs/diagnosis-bug-101.md records reproduce/cause/fix/evidence, and reviews/review-before-merge-bug-101.md completes all seven points of templates/review-before-merge-checklist.md with evidence. Do not commit.",
+      "options": {},
+      "exit": 0,
+      "seconds": 154,
+      "stderr": "Ignoring 6 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects[\"/tmp/shipyard-rec/shipyard-05-oedlxfr1/shipyard\"].hasTrustDialogAccepted: true in /home/deploy/.claude.json.\n",
+      "session_id": "9cf45526-134f-4fb8-bbc6-10c8a3fe2255",
+      "cost_usd": 0.27667063000000003,
+      "turns": 16,
+      "duration_ms": 119451,
+      "result_subtype": "success"
+    }
+  ],
+  "git-status": 0,
+  "git-diff-stat": 0,
+  "verify": 1
+}

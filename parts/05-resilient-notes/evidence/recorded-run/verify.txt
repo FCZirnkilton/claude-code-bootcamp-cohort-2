@@ -1,0 +1,10 @@
+[1mVerifying /tmp/shipyard-rec/shipyard-05-oedlxfr1/shipyard[0m
+  [32mPASS[0m  python test suite
+  [32mPASS[0m  AC1 add prints id
+  [32mPASS[0m  AC2 empty title exits 1
+  [32mPASS[0m  AC4 pending list sorted by due date
+  [32mPASS[0m  AC6 unknown id exits 1
+  [32mPASS[0m  Tournament: three designs
+  [32mPASS[0m  Tournament: matrix and rejected log
+  [31mFAIL[0m  BUG-101 regression test present and passing
+        FAILED (errors=1)

@@ -1,0 +1,22 @@
+{
+  "part": 13,
+  "model": "sonnet",
+  "turns": [
+    {
+      "label": "Cowork (or the stakeholder-update skill)",
+      "prompt": "Read reports/production-readiness.md, docs/HANDOFF.md and docs/team-plan.md. Write reports/stakeholder-update.md: one page for a VP of Engineering reading on a phone, with exactly these sections: current release status, features completed, customer or business impact, major risks (plain language, severities unchanged), decisions required, top three fixes, owners and deadlines (no invented dates), recommended next step.",
+      "options": {},
+      "exit": 0,
+      "seconds": 71,
+      "stderr": "Ignoring 6 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects[\"/home/deploy/bootcamp-recordings/13\"].hasTrustDialogAccepted: true in /home/deploy/.claude.json.\n",
+      "session_id": "9b535bc9-e980-42d7-9bdd-e2130c981700",
+      "cost_usd": 0.10042029999999999,
+      "turns": 5,
+      "duration_ms": 28212,
+      "result_subtype": "success"
+    }
+  ],
+  "git-status": 0,
+  "git-diff-stat": 0,
+  "verify": 0
+}

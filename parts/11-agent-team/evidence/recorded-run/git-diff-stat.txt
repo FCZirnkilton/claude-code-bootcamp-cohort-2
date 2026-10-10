@@ -1,0 +1,5 @@
+ dashboard/index.html | 12 ++++++++++++
+ dashboard/js/main.js |  2 ++
+ dashboard/styles.css | 15 +++++++++++++++
+ notes_api/server.py  | 25 +++++++++++++++++++++++--
+ 4 files changed, 52 insertions(+), 2 deletions(-)

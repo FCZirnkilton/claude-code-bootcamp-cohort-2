@@ -1,0 +1,51 @@
+# Validation record for the engineering-quality plugin and shipyard-bootcamp marketplace
+# Generated: 2026-10-10T19:44:15Z with 2.1.296 (Claude Code)
+# Commands run from the repository root.
+
+$ claude plugin validate ./plugins/engineering-quality --strict
+Validating plugin manifest: <repo>/plugins/engineering-quality/.claude-plugin/plugin.json
+
+✔ Validation passed
+(exit 0)
+
+$ claude plugin validate . --strict
+Validating marketplace manifest: <repo>/.claude-plugin/marketplace.json
+
+✔ Validation passed
+(exit 0)
+
+$ claude plugin validate ./skills-pack/skills
+Validating components in: <repo>/skills-pack/skills
+
+✔ Validation passed
+(exit 0)
+
+$ claude plugin validate ./skills-pack/skills --strict
+Validating components in: <repo>/skills-pack/skills
+
+✔ Validation passed
+(exit 0)
+
+$ claude plugin validate ./skills-pack/agents --strict
+Validating components in: <repo>/skills-pack/agents
+
+✔ Validation passed
+(exit 0)
+
+$ claude plugin validate ./plugins/engineering-quality/skills --strict
+Validating components in: <repo>/plugins/engineering-quality/skills
+
+✔ Validation passed
+(exit 0)
+
+$ claude plugin validate ./plugins/engineering-quality/agents --strict
+Validating components in: <repo>/plugins/engineering-quality/agents
+
+✔ Validation passed
+(exit 0)
+
+$ python3 -m unittest discover -s skills-pack/hooks/tests
+----------------------------------------------------------------------
+Ran 17 tests in 20.872s
+
+OK

@@ -1,0 +1,5 @@
+# name :: shell command :: expected substring in output (optional; exit code must be 0)
+CLAUDE.md exists and is concise (< 80 lines) :: test -s CLAUDE.md && test $(wc -l < CLAUDE.md) -lt 80 && echo ok :: ok
+Rules use paths: frontmatter :: grep -l "^paths:" .claude/rules/*.md | wc -l :: 2
+shipctl stats works :: rm -f $SHIPCTL_DB; python3 shipctl.py add "Freeze API" --owner maya >/dev/null; python3 shipctl.py stats :: maya
+AC2 empty title still exits 1 :: python3 shipctl.py add "  "; test $? -eq 1 && echo ok :: ok

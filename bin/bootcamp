@@ -1,0 +1,245 @@
+#!/usr/bin/env python3
+"""bootcamp: stage, verify and recover the Shipyard project for every workshop part.
+
+The Shipyard repository at the start of part N is built by layering overlays:
+    parts/01/start + parts/01/solution + ... + parts/N-1/solution + parts/N/start
+and the reference checkpoint of part N adds parts/N/solution on top.
+A `.delete` file in an overlay lists paths (one per line) removed by that overlay.
+"""
+
+from __future__ import annotations
+
+import argparse
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+PARTS_DIR = ROOT / "parts"
+DEFAULT_STAGE = Path(os.environ.get("SHIPYARD_STAGE", Path.home() / "shipyard-stage"))
+GREEN, RED, YELLOW, BOLD, RESET = "\033[32m", "\033[31m", "\033[33m", "\033[1m", "\033[0m"
+
+PY_TESTS = ["python3", "-m", "unittest", "discover", "-s", "tests", "-q"]
+JS_TESTS = ["node", "--test", "dashboard/tests/"]
+
+
+def parts() -> list[Path]:
+    return sorted(p for p in PARTS_DIR.iterdir() if p.is_dir() and p.name[:2].isdigit())
+
+
+def part_dir(number: str) -> Path:
+    key = f"{int(number):02d}"
+    for p in parts():
+        if p.name.startswith(key + "-"):
+            return p
+    sys.exit(f"unknown part {number!r}; run `bin/bootcamp list`")
+
+
+def apply_overlay(src: Path, dest: Path) -> None:
+    if not src.is_dir():
+        return
+    delete = src / ".delete"
+    if delete.exists():
+        for line in delete.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#"):
+                target = dest / line
+                if target.is_dir():
+                    shutil.rmtree(target)
+                elif target.exists():
+                    target.unlink()
+    for item in src.rglob("*"):
+        rel = item.relative_to(src)
+        if rel.name == ".delete" or "__pycache__" in rel.parts:
+            continue
+        out = dest / rel
+        if item.is_dir():
+            out.mkdir(parents=True, exist_ok=True)
+        else:
+            out.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(item, out)
+
+
+def materialize(number: str, dest: Path, with_solution: bool) -> None:
+    target = part_dir(number)
+    for p in parts():
+        apply_overlay(p / "start", dest)
+        if p == target:
+            if with_solution:
+                apply_overlay(p / "solution", dest)
+            return
+        apply_overlay(p / "solution", dest)
+
+
+def git(dest: Path, *args: str) -> None:
+    subprocess.run(["git", *args], cwd=dest, check=True, stdout=subprocess.DEVNULL)
+
+
+def fresh_repo(dest: Path, message: str) -> None:
+    git(dest, "init", "-q", "-b", "main")
+    git(dest, "add", "-A")
+    git(dest, "-c", "user.name=Shipyard Bootcamp", "-c", "user.email=bootcamp@example.com",
+        "commit", "-q", "-m", message)
+
+
+def prepare_dest(dest: Path, force: bool) -> None:
+    if dest.exists() and any(dest.iterdir()):
+        if not force:
+            sys.exit(f"{dest} is not empty; pass --force to replace it")
+        shutil.rmtree(dest)
+    dest.mkdir(parents=True, exist_ok=True)
+
+
+def cmd_list(_: argparse.Namespace) -> None:
+    for p in parts():
+        readme = p / "README.md"
+        title = readme.read_text().splitlines()[0].lstrip("# ") if readme.exists() else p.name
+        print(f"{p.name[:2]}  {title}")
+
+
+def mark_part(dest: Path, number: str) -> None:
+    (dest / ".bootcamp").mkdir(exist_ok=True)
+    (dest / ".bootcamp" / "part").write_text(f"{int(number):02d}\n")
+
+
+def cmd_stage(args: argparse.Namespace) -> None:
+    dest = Path(args.dir).expanduser()
+    prepare_dest(dest, args.force)
+    materialize(args.part, dest, with_solution=False)
+    mark_part(dest, args.part)
+    fresh_repo(dest, f"start of part {int(args.part):02d}")
+    print(f"{GREEN}Staged part {int(args.part):02d} at {dest}{RESET} (baseline commit = recovery point)")
+
+
+def cmd_checkpoint(args: argparse.Namespace) -> None:
+    dest = Path(args.dir).expanduser()
+    prepare_dest(dest, args.force)
+    materialize(args.part, dest, with_solution=True)
+    mark_part(dest, args.part)
+    fresh_repo(dest, f"reference checkpoint of part {int(args.part):02d}")
+    print(f"{YELLOW}Reference checkpoint of part {int(args.part):02d} at {dest}{RESET}")
+
+
+def cmd_fallback(args: argparse.Namespace) -> None:
+    dest = Path(args.dir).expanduser()
+    if not (dest / ".git").exists():
+        sys.exit(f"{dest} is not a staged repo; run `bin/bootcamp stage {args.part}` first")
+    apply_overlay(part_dir(args.part) / "solution", dest)
+    print(f"{YELLOW}{BOLD}PREPARED REFERENCE SOLUTION LOADED for part {int(args.part):02d}"
+          f" (not generated live){RESET}")
+    subprocess.run(["git", "status", "--short"], cwd=dest)
+
+
+def run_check(name: str, cmd: list[str], cwd: Path, expect: str | None = None) -> bool:
+    proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True,
+                          env={**os.environ, "SHIPCTL_DB": str(cwd / ".verify-tasks.json")})
+    out = (proc.stdout + proc.stderr).strip()
+    ok = proc.returncode == 0 and (expect is None or expect in out)
+    mark = f"{GREEN}PASS{RESET}" if ok else f"{RED}FAIL{RESET}"
+    print(f"  {mark}  {name}")
+    if not ok:
+        print("        " + "\n        ".join(out.splitlines()[-15:]))
+    return ok
+
+
+def checks_for(dest: Path) -> list[tuple[str, list[str], str | None]]:
+    checks: list[tuple[str, list[str], str | None]] = []
+    if (dest / "tests").is_dir():
+        checks.append(("python test suite", PY_TESTS, None))
+    if (dest / "dashboard" / "tests").is_dir() and shutil.which("node"):
+        checks.append(("dashboard test suite", JS_TESTS, None))
+    marker = dest / ".bootcamp" / "part"
+    extra = dest / ".bootcamp" / "checks.txt"
+    if marker.exists():
+        target = part_dir(marker.read_text().strip()) / "solution" / ".bootcamp" / "checks.txt"
+        if target.exists():
+            extra = target
+    if extra.exists():
+        for line in extra.read_text().splitlines():
+            if line.strip() and not line.startswith("#"):
+                name, cmd, expect = (line.split(" :: ") + [""])[:3]
+                checks.append((name.strip(), ["bash", "-c", cmd.strip()], expect.strip() or None))
+    return checks
+
+
+def verify_dir(dest: Path) -> bool:
+    results = [run_check(n, c, dest, e) for n, c, e in checks_for(dest)]
+    if not results:
+        print(f"  {YELLOW}SKIP{RESET}  no automated checks for this part (see README)")
+    return all(results)
+
+
+def cmd_verify(args: argparse.Namespace) -> None:
+    dest = Path(args.dir).expanduser()
+    print(f"{BOLD}Verifying {dest}{RESET}")
+    sys.exit(0 if verify_dir(dest) else 1)
+
+
+def tool_version(cmd: list[str]) -> str:
+    try:
+        return subprocess.run(cmd, capture_output=True, text=True, timeout=20).stdout.strip().splitlines()[0]
+    except (OSError, subprocess.TimeoutExpired, IndexError):
+        return ""
+
+
+def cmd_preflight(args: argparse.Namespace) -> None:
+    print(f"{BOLD}Tools{RESET}")
+    ok = True
+    for name, cmd, required in [("python3", ["python3", "--version"], True), ("git", ["git", "--version"], True),
+                                ("node", ["node", "--version"], False), ("claude", ["claude", "--version"], False)]:
+        version = tool_version(cmd)
+        mark = f"{GREEN}OK  {RESET}" if version else (f"{RED}MISS{RESET}" if required else f"{YELLOW}MISS{RESET}")
+        ok &= bool(version) or not required
+        print(f"  {mark}  {name:8} {version}")
+    selected = [part_dir(p) for p in args.parts] if args.parts else parts()
+    for p in selected:
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp)
+            materialize(p.name[:2], dest, with_solution=True)
+            mark_part(dest, p.name[:2])
+            print(f"{BOLD}Part {p.name}{RESET} (reference checkpoint)")
+            ok &= verify_dir(dest)
+    print(f"\n{GREEN + 'PREFLIGHT PASSED' if ok else RED + 'PREFLIGHT FAILED'}{RESET}")
+    sys.exit(0 if ok else 1)
+
+
+def cmd_diff(args: argparse.Namespace) -> None:
+    with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+        materialize(args.part, Path(a), with_solution=False)
+        materialize(args.part, Path(b), with_solution=True)
+        subprocess.run(["git", "--no-pager", "diff", "--no-index", "--stat", a, b])
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(prog="bootcamp", description=__doc__.splitlines()[0])
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("list", help="list workshop parts").set_defaults(func=cmd_list)
+    for name, func, help_ in [("stage", cmd_stage, "create the starting repo of a part"),
+                              ("checkpoint", cmd_checkpoint, "create the reference end state of a part")]:
+        p = sub.add_parser(name, help=help_)
+        p.add_argument("part")
+        p.add_argument("--dir", default=str(DEFAULT_STAGE))
+        p.add_argument("--force", action="store_true", help="replace a non-empty directory")
+        p.set_defaults(func=func)
+    p = sub.add_parser("fallback", help="load the prepared reference solution into the stage")
+    p.add_argument("part")
+    p.add_argument("--dir", default=str(DEFAULT_STAGE))
+    p.set_defaults(func=cmd_fallback)
+    p = sub.add_parser("verify", help="run the acceptance checks in a directory")
+    p.add_argument("--dir", default=str(DEFAULT_STAGE))
+    p.set_defaults(func=cmd_verify)
+    p = sub.add_parser("preflight", help="check tools and every reference checkpoint")
+    p.add_argument("parts", nargs="*")
+    p.set_defaults(func=cmd_preflight)
+    p = sub.add_parser("diff", help="files changed by a part's reference solution")
+    p.add_argument("part")
+    p.set_defaults(func=cmd_diff)
+    args = parser.parse_args()
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()

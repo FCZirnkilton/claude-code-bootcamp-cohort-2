@@ -1,0 +1,102 @@
+"""HTTP layer: routing and JSON translation only."""
+
+from __future__ import annotations
+
+import json
+import os
+import re
+from http import HTTPStatus
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from typing import Any
+
+from .repository import NoteRepository
+from .service import NoteService, NotFound, ValidationError
+
+NOTE_PATH = re.compile(r"^/api/notes/(\d+)$")
+
+
+def make_handler(service: NoteService) -> type[BaseHTTPRequestHandler]:
+    class Handler(BaseHTTPRequestHandler):
+        server_version = "ShipyardNotes/1.0"
+
+        def log_message(self, fmt: str, *args: Any) -> None:
+            if os.environ.get("NOTES_API_LOG"):
+                super().log_message(fmt, *args)
+
+        def _send(self, status: int, payload: Any = None) -> None:
+            body = b"" if payload is None else json.dumps(payload).encode()
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def _json_body(self) -> dict[str, Any]:
+            length = int(self.headers.get("Content-Length") or 0)
+            raw = self.rfile.read(length) if length else b"{}"
+            try:
+                data = json.loads(raw or b"{}")
+            except json.JSONDecodeError as exc:
+                raise ValidationError("request body must be valid JSON") from exc
+            if not isinstance(data, dict):
+                raise ValidationError("request body must be a JSON object")
+            return data
+
+        def _dispatch(self, method: str) -> None:
+            path = self.path.split("?", 1)[0]
+            try:
+                if path == "/api/health" and method == "GET":
+                    return self._send(HTTPStatus.OK, {"status": "ok"})
+                if path == "/api/notes":
+                    if method == "GET":
+                        return self._send(HTTPStatus.OK, service.list())
+                    if method == "POST":
+                        return self._send(HTTPStatus.CREATED, service.create(self._json_body()))
+                match = NOTE_PATH.match(path)
+                if match:
+                    note_id = int(match.group(1))
+                    if method == "GET":
+                        return self._send(HTTPStatus.OK, service.get(note_id))
+                    if method == "PATCH":
+                        return self._send(HTTPStatus.OK, service.update(note_id, self._json_body()))
+                    if method == "DELETE":
+                        service.delete(note_id)
+                        return self._send(HTTPStatus.NO_CONTENT)
+                self._send(HTTPStatus.NOT_FOUND, {"error": f"no route for {method} {path}"})
+            except ValidationError as exc:
+                self._send(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
+            except NotFound as exc:
+                self._send(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+            except Exception as exc:  # noqa: BLE001
+                self._send(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": repr(exc)})
+
+        def do_GET(self) -> None:
+            self._dispatch("GET")
+
+        def do_POST(self) -> None:
+            self._dispatch("POST")
+
+        def do_PATCH(self) -> None:
+            self._dispatch("PATCH")
+
+        def do_DELETE(self) -> None:
+            self._dispatch("DELETE")
+
+    return Handler
+
+
+def create_server(host: str = "0.0.0.0", port: int = 8000, db_path: str = "notes.db") -> ThreadingHTTPServer:
+    service = NoteService(NoteRepository(db_path))
+    return ThreadingHTTPServer((host, port), make_handler(service))
+
+
+def main() -> None:
+    port = int(os.environ.get("PORT", "8000"))
+    server = create_server(port=port, db_path=os.environ.get("NOTES_DB", "notes.db"))
+    print(f"Shipyard Notes API on http://localhost:{port}/api/notes")
+    server.serve_forever()
+
+
+if __name__ == "__main__":
+    main()

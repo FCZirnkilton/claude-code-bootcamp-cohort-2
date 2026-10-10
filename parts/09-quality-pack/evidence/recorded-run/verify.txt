@@ -1,0 +1,17 @@
+[1mVerifying /tmp/shipyard-rec/shipyard-09-h9hqp3uf/shipyard[0m
+  [32mPASS[0m  python test suite
+  [32mPASS[0m  dashboard test suite
+  [32mPASS[0m  AC1 add prints id
+  [32mPASS[0m  AC2 empty title exits 1
+  [32mPASS[0m  AC4 pending list sorted by due date
+  [32mPASS[0m  AC6 unknown id exits 1
+  [32mPASS[0m  Tournament: three designs
+  [32mPASS[0m  Tournament: matrix and rejected log
+  [32mPASS[0m  BUG-101 regression test present and passing
+  [32mPASS[0m  Search treats % literally (HTTP-free)
+  [32mPASS[0m  Dashboard is served at /
+  [32mPASS[0m  Split into modules (at least 4 JS files)
+  [32mPASS[0m  Handoff docs present
+  [32mPASS[0m  Unsafe command hook blocks force push
+  [32mPASS[0m  Unsafe command hook allows tests
+  [32mPASS[0m  Skill and subagent present

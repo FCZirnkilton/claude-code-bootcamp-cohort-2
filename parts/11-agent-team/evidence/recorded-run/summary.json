@@ -1,0 +1,43 @@
+{
+  "part": 11,
+  "model": "sonnet",
+  "turns": [
+    {
+      "label": "Launch the team (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`)",
+      "prompt": "Read briefs/release-notes-team.md. Create an agent team with three teammates: backend owner, frontend owner, and test and verification owner, each restricted to the files listed in the brief. Require plan approval before any teammate edits. Freeze the API contract from the brief first, write the task list with dependencies to docs/team-plan.md, then let the teammates work in parallel. When all tasks are done, run both test suites, show the raw output, and summarise what each teammate changed. Do not commit.",
+      "options": {
+        "env": {
+          "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+        }
+      },
+      "exit": 0,
+      "seconds": 704,
+      "stderr": "Ignoring 6 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects[\"/home/deploy/bootcamp-recordings/11\"].hasTrustDialogAccepted: true in /home/deploy/.claude.json.\n",
+      "session_id": "96ad2a4b-9ab5-4dc4-b50b-a521e1821bc5",
+      "cost_usd": 1.0546324000000002,
+      "turns": 3,
+      "duration_ms": 91007,
+      "result_subtype": "success"
+    },
+    {
+      "label": "Steer one teammate",
+      "prompt": "Message the frontend owner: the panel must show an empty-state message when the release has no notes, and the Copy button must say \"Copied\" for 1.5 seconds.",
+      "options": {
+        "env": {
+          "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+        }
+      },
+      "exit": 0,
+      "seconds": 147,
+      "stderr": "Ignoring 6 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects[\"/home/deploy/bootcamp-recordings/11\"].hasTrustDialogAccepted: true in /home/deploy/.claude.json.\n",
+      "session_id": "96ad2a4b-9ab5-4dc4-b50b-a521e1821bc5",
+      "cost_usd": 1.1597690999999999,
+      "turns": 2,
+      "duration_ms": 46398,
+      "result_subtype": "success"
+    }
+  ],
+  "git-status": 0,
+  "git-diff-stat": 0,
+  "verify": 0
+}

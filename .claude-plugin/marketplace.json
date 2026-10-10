@@ -1,0 +1,19 @@
+{
+  "name": "shipyard-bootcamp",
+  "owner": {
+    "name": "Luca Berton"
+  },
+  "metadata": {
+    "description": "Plugins from Claude Code Bootcamp: Cohort 2 (Packt). Build, orchestrate, review, and ship the Shipyard project.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "engineering-quality",
+      "source": "./plugins/engineering-quality",
+      "description": "Review Before Merge workflow: change-review and security-review skills, a security-reviewer subagent, a post-edit test hook, and an unsafe-command blocking hook.",
+      "category": "code-quality",
+      "keywords": ["code-review", "security", "testing", "hooks"]
+    }
+  ]
+}

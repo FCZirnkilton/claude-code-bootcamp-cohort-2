@@ -1,0 +1,7 @@
+# name :: shell command :: expected substring in output (optional; exit code must be 0)
+AC1 add prints id :: rm -f $SHIPCTL_DB; python3 shipctl.py add "Freeze API" :: Added #1: Freeze API
+AC2 empty title exits 1 :: python3 shipctl.py add "  "; test $? -eq 1 && echo ok :: ok
+AC4 pending list sorted by due date :: rm -f $SHIPCTL_DB; python3 shipctl.py add Zeta-late >/dev/null; python3 shipctl.py add Alpha-early >/dev/null; python3 shipctl.py due 1 2026-11-09 >/dev/null; python3 shipctl.py due 2 2026-11-01 >/dev/null; python3 shipctl.py list | python3 -c "import sys; t=sys.stdin.read(); print('order-ok' if 0 <= t.find('Alpha-early') < t.find('Zeta-late') else 'wrong order')" :: order-ok
+AC6 unknown id exits 1 :: python3 shipctl.py done 999; test $? -eq 1 && echo ok :: ok
+Tournament: three designs :: ls designs/option-*.md | wc -l :: 3
+Tournament: matrix and rejected log :: test -s decision/decision-matrix.md && test -s decision/rejected-options-log.md && echo ok :: ok

@@ -1,0 +1,22 @@
+{
+  "part": 1,
+  "model": "sonnet",
+  "turns": [
+    {
+      "label": "Safety boundary (Manual mode)",
+      "prompt": "Read README.md. Draft SAFETY.md for this repository: the permission mode we use and when, actions allowed without asking, actions that must ask first, blocked actions, which actions are reversible versus irreversible, and how we recover (baseline commit). Then show me a matching .claude/settings.json permissions block (allow / ask / deny) in your reply, but do not create that file: I will review it and save it myself. Do not commit.",
+      "options": {},
+      "exit": 0,
+      "seconds": 89,
+      "stderr": "",
+      "session_id": "9723c39e-6854-40aa-b5b3-332b11b4f72b",
+      "cost_usd": 0.10268670000000002,
+      "turns": 6,
+      "duration_ms": 63582,
+      "result_subtype": "success"
+    }
+  ],
+  "git-status": 0,
+  "git-diff-stat": 0,
+  "verify": 0
+}

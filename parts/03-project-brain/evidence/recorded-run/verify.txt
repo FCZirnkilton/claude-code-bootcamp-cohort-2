@@ -1,0 +1,8 @@
+[1mVerifying /tmp/shipyard-rec/shipyard-03-d22ewjqy/shipyard[0m
+  [32mPASS[0m  python test suite
+  [32mPASS[0m  CLAUDE.md exists and is concise (< 80 lines)
+  [31mFAIL[0m  Rules use paths: frontmatter
+        0
+        grep: .claude/rules/*.md: No such file or directory
+  [32mPASS[0m  shipctl stats works
+  [32mPASS[0m  AC2 empty title still exits 1

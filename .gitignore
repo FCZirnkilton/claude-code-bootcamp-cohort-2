@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/
+mock-test/results/
+*.db
+.stage/
+deck/.posters/

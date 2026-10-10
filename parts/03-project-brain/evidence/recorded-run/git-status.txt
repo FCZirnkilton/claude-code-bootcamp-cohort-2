@@ -1,0 +1,4 @@
+ M README.md
+ M shipctl.py
+ M tests/test_shipctl.py
+?? CLAUDE.md

@@ -1,0 +1,35 @@
+{
+  "part": 14,
+  "model": "sonnet",
+  "turns": [
+    {
+      "label": "Remote Control (`claude --remote-control \"Shipyard v1.4 verification\"`)",
+      "prompt": "Run both test suites and evidence/readiness_probe.py, then write a five-line verification status to ops/remote-verification-status.md: test totals with the raw summary lines, probe results, verdict GREEN/YELLOW/RED and the next step. Stop after writing the file; do not edit anything else.",
+      "options": {},
+      "exit": 0,
+      "seconds": 153,
+      "stderr": "Ignoring 6 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects[\"/home/deploy/bootcamp-recordings/14\"].hasTrustDialogAccepted: true in /home/deploy/.claude.json.\n",
+      "session_id": "ddbf6eaa-b4e0-491c-a294-230eb568047f",
+      "cost_usd": 0.0852239,
+      "turns": 7,
+      "duration_ms": 138752,
+      "result_subtype": "success"
+    },
+    {
+      "label": "Design the routine",
+      "prompt": "Write ops/post-release-routine.md: a recurring post-release check for this repository with trigger, repository scope, required permissions (least privilege), expected output, the human approval point, and the completion or stop condition. Say what must stay local and what can run as a cloud routine.",
+      "options": {},
+      "exit": 0,
+      "seconds": 182,
+      "stderr": "Ignoring 6 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects[\"/home/deploy/bootcamp-recordings/14\"].hasTrustDialogAccepted: true in /home/deploy/.claude.json.\n",
+      "session_id": "ddbf6eaa-b4e0-491c-a294-230eb568047f",
+      "cost_usd": 0.134245,
+      "turns": 3,
+      "duration_ms": 101523,
+      "result_subtype": "success"
+    }
+  ],
+  "git-status": 0,
+  "git-diff-stat": 0,
+  "verify": 0
+}

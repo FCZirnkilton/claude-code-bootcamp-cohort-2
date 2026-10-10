@@ -1,0 +1,4 @@
+[1mVerifying /home/deploy/bootcamp-recordings/01[0m
+  [32mPASS[0m  SAFETY.md written
+  [32mPASS[0m  Settings have deny rules (once you saved them)
+  [32mPASS[0m  Baseline commit exists
