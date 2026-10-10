@@ -98,6 +98,6 @@ FAILED (failures=1)
 | Check | Command | Result |
 |---|---|---|
 | Regression test | `python3 -m unittest tests.test_partial_update -v` | `Ran 5 tests ... OK` |
-| Full suite | `python3 -m unittest discover -s tests -v; echo "exit=$?"` | `Ran 23 tests in 0.412s` / `OK` / `exit=0` |
+| Full suite | `python3 -m unittest discover -s tests -v; echo "exit=$?"` | `Ran 32 tests in 1.457s` / `OK` / `exit=0` |
 | Runtime | The same PATCH `curl` as in step 1 | `"body": "Rollback plan: redeploy v1.3"` |
 | `/goal` | `/goal python3 -m unittest discover -s tests exits 0 and test_title_only_patch_keeps_body is reported ok` | met after 3 turns |

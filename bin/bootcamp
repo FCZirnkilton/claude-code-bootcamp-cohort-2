@@ -200,6 +200,7 @@ def cmd_preflight(args: argparse.Namespace) -> None:
             dest = Path(tmp)
             materialize(p.name[:2], dest, with_solution=True)
             mark_part(dest, p.name[:2])
+            fresh_repo(dest, f"reference checkpoint of part {p.name[:2]}")
             print(f"{BOLD}Part {p.name}{RESET} (reference checkpoint)")
             ok &= verify_dir(dest)
     print(f"\n{GREEN + 'PREFLIGHT PASSED' if ok else RED + 'PREFLIGHT FAILED'}{RESET}")

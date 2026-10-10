@@ -6,3 +6,4 @@ mock-test/results/
 *.db
 .stage/
 deck/.posters/
+parts/*/evidence/recorded-run.new/

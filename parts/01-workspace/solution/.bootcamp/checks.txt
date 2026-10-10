@@ -1,4 +1,4 @@
 # name :: shell command :: expected substring in output (optional; exit code must be 0)
 SAFETY.md written :: test -s SAFETY.md && grep -ciE "irreversible|blocked" SAFETY.md :: 
 Settings have deny rules (once you saved them) :: python3 -c "import json,os; p='.claude/settings.json'; print(len(json.load(open(p))['permissions']['deny']) if os.path.exists(p) else 'not saved yet')" ::
-Baseline commit exists :: git log --oneline | tail -1 :: start of part
+Baseline commit exists :: git log --oneline | tail -1 :: of part

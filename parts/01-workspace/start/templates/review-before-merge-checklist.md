@@ -41,7 +41,7 @@
 |---|---|---|---|
 | 1 | Scope | Pass | `git diff --stat main...fix/bug-101` shows `notes_api/service.py` (+2 -1) and `tests/test_partial_update.py` (new). Both are in the brief. No other files changed. |
 | 2 | Diff | Pass | `service.update` now falls back to `current["body"]` when `"body"` is not in the request. I can explain all 3 changed lines. The new test file covers five cases. |
-| 3 | Tests | Pass | `python3 -m unittest discover -s tests -v`: `Ran 23 tests in 0.412s` / `OK`, `exit=0`. The regression test `test_title_only_patch_keeps_body` failed on `main` with `AssertionError: '' != 'Rollback plan: redeploy v1.3'` (output saved in `evidence/bug-101-red.txt`). |
+| 3 | Tests | Pass | `python3 -m unittest discover -s tests -v`: `Ran 32 tests in 1.457s` / `OK`, `exit=0`. The regression test `test_title_only_patch_keeps_body` failed on `main` with `AssertionError: '' != 'Rollback plan: redeploy v1.3'` (output saved in `evidence/bug-101-red.txt`). |
 | 4 | Security | Pass | No new imports or dependencies. `_body()` validation is unchanged and still enforces type and length. The grep for secrets in the diff returned nothing. |
 | 5 | Runtime | Pass | `curl -s -X PATCH localhost:8000/api/notes/1 -H 'Content-Type: application/json' -d '{"title":"Release v1.4.1"}'` returned body `"Rollback plan: redeploy v1.3"` (saved in `evidence/bug-101-curl.txt`). |
 | 6 | Rollback | Pass | Branch `fix/bug-101` with one commit, `a91d0e2`. `main` is untouched at `7c4b2f0`. `git status` is clean. |
