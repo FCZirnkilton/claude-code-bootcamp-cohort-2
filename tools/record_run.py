@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -79,7 +80,9 @@ def main() -> None:
     import tempfile
     stage = Path(tempfile.mkdtemp(prefix=f"shipyard-{args.part:02d}-", dir=args.isolate)) / "shipyard" if args.isolate else Path(args.out).expanduser() / f"{args.part:02d}"
     subprocess.run([str(ROOT / "bin" / "bootcamp"), "stage", str(args.part), "--dir", str(stage), "--force"], check=True)
-    evidence = ROOT / "parts" / part["slug"] / "evidence" / "recorded-run"
+    final_evidence = ROOT / "parts" / part["slug"] / "evidence" / "recorded-run"
+    evidence = final_evidence.with_name("recorded-run.new")
+    shutil.rmtree(evidence, ignore_errors=True)
     evidence.mkdir(parents=True, exist_ok=True)
     options = TURN_OPTIONS.get(args.part, [{}] * len(part["prompts"]))
     session, summary = None, {"part": args.part, "model": args.model, "turns": []}
@@ -110,6 +113,13 @@ def main() -> None:
         (evidence / f"{name}.txt").write_text(proc.stdout + proc.stderr)
         summary[name] = proc.returncode
     (evidence / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    ok = all(t["exit"] == 0 and (t.get("cost_usd") or 0) > 0 for t in summary["turns"]) and \
+        len(summary["turns"]) == len(part["prompts"])
+    if ok:
+        shutil.rmtree(final_evidence, ignore_errors=True)
+        evidence.rename(final_evidence)
+    else:
+        print(f"RUN INCOMPLETE: previous evidence kept; failed attempt left in {evidence}", flush=True)
     print(json.dumps({k: v for k, v in summary.items() if k != "turns"}), flush=True)
 
 

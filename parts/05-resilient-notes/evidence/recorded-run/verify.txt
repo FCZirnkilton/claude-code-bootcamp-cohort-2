@@ -6,5 +6,4 @@
   [32mPASS[0m  AC6 unknown id exits 1
   [32mPASS[0m  Tournament: three designs
   [32mPASS[0m  Tournament: matrix and rejected log
-  [31mFAIL[0m  BUG-101 regression test present and passing
-        FAILED (errors=1)
+  [32mPASS[0m  BUG-101 regression test present and passing
