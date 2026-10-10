@@ -37,7 +37,7 @@ Customize the description and add a Shipyard section to change-review/SKILL.md, 
 ## Evidence to show (not claims)
 - `/hooks` lists PreToolUse and PostToolUse
 - Post-edit tests run automatically
-- `git push --force` blocked with the hook's reason
+- `cat .env` blocked by the hook, although permissions allow cat
 - Severity-ranked review with file:line
 
 ## Discussion

@@ -295,13 +295,12 @@ PARTS = [
              "reviews/security-review-dashboard.md. Do not change any code."),
             ("Hook in action",
              "Make the release target date in dashboard/index.html read 2026-11-12 instead of 2026-11-10 and tell me "
-             "what the post-edit validation hook reported. Then test our PreToolUse guardrail: this practice repo has "
-             "no remote, and the hook is expected to block the command before it runs. Attempt exactly "
-             "`git push --force origin main` once and report the hook's message word for word. Do not try any "
-             "workaround."),
+             "what the post-edit validation hook reported. Then test our PreToolUse guardrail: the block-unsafe-commands "
+             "hook is expected to stop secret reads before they run. Attempt exactly `cat .env` once (the file may not "
+             "even exist) and report the hook's message word for word. Do not try any workaround."),
         ],
         "evidence": ["`/hooks` lists PreToolUse and PostToolUse", "Post-edit tests run automatically",
-                     "`git push --force` blocked with the hook's reason", "Severity-ranked review with file:line"],
+                     "`cat .env` blocked by the hook, although permissions allow cat", "Severity-ranked review with file:line"],
         "discussion": [
             "Which rule in your team should be a hook, not an instruction?",
             "Why does the security reviewer get only Read, Grep and Glob?",
@@ -448,7 +447,7 @@ PARTS = [
                     "Post-release routine brief"],
         "prompts": [
             ("Remote Control (`claude --remote-control \"Shipyard v1.4 verification\"`)",
-             "Run both test suites and evidence/readiness_probe.py, then write a five-line verification status to "
+             "Run both test suites and python3 scripts/readiness_probe.py (it starts its own server), then write a five-line verification status to "
              "ops/remote-verification-status.md: test totals with the raw summary lines, probe results, verdict "
              "GREEN/YELLOW/RED and the next step. Stop after writing the file; do not edit anything else."),
             ("Design the routine",

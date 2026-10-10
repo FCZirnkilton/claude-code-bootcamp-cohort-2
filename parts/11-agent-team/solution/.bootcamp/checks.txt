@@ -5,7 +5,7 @@ AC4 pending list sorted by due date :: rm -f $SHIPCTL_DB; python3 shipctl.py add
 AC6 unknown id exits 1 :: python3 shipctl.py done 999; test $? -eq 1 && echo ok :: ok
 Tournament: three designs :: ls designs/option-*.md | wc -l :: 3
 Tournament: matrix and rejected log :: test -s decision/decision-matrix.md && test -s decision/rejected-options-log.md && echo ok :: ok
-BUG-101 regression test present and passing :: python3 -m unittest tests.test_partial_update -q 2>&1 | tail -1 :: OK
+BUG-101 regression test present and passing :: python3 -m unittest discover -s tests -p "test_partial_update.py" -q 2>&1 | tail -1 :: OK
 Search treats % literally (HTTP-free) :: python3 -c "from notes_api.repository import NoteRepository as R; from notes_api.service import NoteService as S; s=S(R()); s.create({'title':'Coverage 100%'}); s.create({'title':'Coverage 1000'}); print(len(s.list(q='100%')))" :: 1
 Dashboard is served at / :: python3 -c "import notes_api.server as s; print(s.DASHBOARD_DIR.joinpath('index.html').exists())" :: True
 Split into modules (at least 4 JS files) :: test $(ls dashboard/*.js dashboard/js/*.js 2>/dev/null | wc -l) -ge 4 && echo ok :: ok

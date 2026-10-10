@@ -5,7 +5,7 @@ Copy each block into Claude Code in order. Read the output before sending the ne
 ## 1. Remote Control (`claude --remote-control "Shipyard v1.4 verification"`)
 
 ```text
-Run both test suites and evidence/readiness_probe.py, then write a five-line verification status to ops/remote-verification-status.md: test totals with the raw summary lines, probe results, verdict GREEN/YELLOW/RED and the next step. Stop after writing the file; do not edit anything else.
+Run both test suites and python3 scripts/readiness_probe.py (it starts its own server), then write a five-line verification status to ops/remote-verification-status.md: test totals with the raw summary lines, probe results, verdict GREEN/YELLOW/RED and the next step. Stop after writing the file; do not edit anything else.
 ```
 
 ## 2. Design the routine

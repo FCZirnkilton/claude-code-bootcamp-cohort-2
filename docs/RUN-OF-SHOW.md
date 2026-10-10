@@ -4,7 +4,7 @@ Generated from `tools/course_data.py` by `tools/gen_parts.py`. Times follow the 
 
 | Time | Block | Min | Video | Fallback |
 |---|---|--:|--:|---|
-| 09:00–09:20 | **Part 01** · Welcome, setup, AI-first mindset and safe delegation (Project 1) | 20 | – | `bin/bootcamp fallback 01` |
+| 09:00–09:20 | **Part 01** · Welcome, setup, AI-first mindset and safe delegation (Project 1) | 20 | 37 s | `bin/bootcamp fallback 01` |
 | 09:20–09:45 | **Part 02** · Prompting Claude Code like a tech lead (Project 2) | 25 | – | `bin/bootcamp fallback 02` |
 | 09:45–10:10 | **Part 03** · CLAUDE.md, scoped rules and auto memory (Project 3) | 25 | – | `bin/bootcamp fallback 03` |
 | 10:10–10:20 | Break | 10 | | catch up: `bin/bootcamp checkpoint NN --force` |

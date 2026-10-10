@@ -33,6 +33,8 @@ TURN_OPTIONS: dict[int, list[dict]] = {
     2: [{"mode": "plan"}, {}],
     4: [{"mode": "plan"}, {}],
     6: [{"flags": ["--worktree", "search-tags"]}],
+    9: [{}, {"before": [("Lab step: the human wires the hooks into .claude/settings.json (PreToolUse + PostToolUse)",
+                         "cp {root}/parts/09-quality-pack/solution/.claude/settings.json .claude/settings.json && grep -o 'block-unsafe-commands.sh\\|post-edit-validate.sh' .claude/settings.json")]}],
     7: [{}],                                   # Chrome turn is recorded with captured browser evidence instead
     8: [{"mode": "plan"}, {}],
     10: [{}, {"flags": ["--plugin-dir", "./plugins/engineering-quality"]}],
