@@ -1,4 +1,4 @@
- README.md             |  2 ++
- shipctl.py            | 23 +++++++++++++++++++++++
- tests/test_shipctl.py | 26 ++++++++++++++++++++++++++
- 3 files changed, 51 insertions(+)
+ README.md             |  1 +
+ shipctl.py            | 24 ++++++++++++++++++++++++
+ tests/test_shipctl.py | 27 +++++++++++++++++++++++++++
+ 3 files changed, 52 insertions(+)

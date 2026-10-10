@@ -5,33 +5,40 @@
     {
       "label": "Write the project brain",
       "prompt": "Create a concise CLAUDE.md for this repository (under 60 lines): stack, exact build and test commands, conventions you can infer from shipctl.py and tests/, the exit-code contract, protected files (SAFETY.md, .claude/settings.json, briefs/), and do-not rules. Then create two path-scoped rules with `paths:` frontmatter: .claude/rules/tests.md for tests/**/*.py and .claude/rules/cli.md for shipctl.py. Keep anything occasional out of CLAUDE.md. Do not commit.",
-      "options": {
-        "extra_allowed": "Edit(./.claude/rules/**) Write(./.claude/rules/**)"
-      },
+      "options": {},
+      "human_steps": [],
       "exit": 0,
       "seconds": 81,
-      "stderr": "Ignoring 6 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects[\"/tmp/shipyard-rec/shipyard-03-d22ewjqy/shipyard\"].hasTrustDialogAccepted: true in /home/deploy/.claude.json.\n",
-      "session_id": "9c593480-e73f-486c-853c-360f2cd45900",
-      "cost_usd": 0.1581632,
-      "turns": 8,
-      "duration_ms": 56078,
+      "stderr": "Ignoring 6 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects[\"/tmp/shipyard-rec/shipyard-03-rrl8qzq_/shipyard\"].hasTrustDialogAccepted: true in /home/deploy/.claude.json.\n",
+      "session_id": "79d81b13-3480-47ac-9e0d-cdc79a416d0b",
+      "cost_usd": 0.144619,
+      "turns": 7,
+      "duration_ms": 59620,
       "result_subtype": "success"
     },
     {
       "label": "Prove the context is applied",
       "prompt": "Add a `shipctl stats` command that prints pending, done and overdue counts per owner. Follow CLAUDE.md and the rules in .claude/rules. When done, list which specific rules you applied and where, run the full test suite and show the raw output. Do not commit.",
       "options": {},
+      "human_steps": [
+        {
+          "description": "Human approves the rules (headless runs cannot approve edits under .claude/): install the reference rules",
+          "command": "mkdir -p .claude/rules && cp <bootcamp>/parts/03-project-brain/solution/.claude/rules/*.md .claude/rules/ && head -4 .claude/rules/*.md",
+          "output": "==> .claude/rules/cli.md <==\n---\npaths:\n  - \"shipctl.py\"\n---\n\n==> .claude/rules/tests.md <==\n---\npaths:\n  - \"tests/**/*.py\"\n---\n",
+          "exit": 0
+        }
+      ],
       "exit": 0,
-      "seconds": 158,
-      "stderr": "Ignoring 6 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects[\"/tmp/shipyard-rec/shipyard-03-d22ewjqy/shipyard\"].hasTrustDialogAccepted: true in /home/deploy/.claude.json.\n",
-      "session_id": "9c593480-e73f-486c-853c-360f2cd45900",
-      "cost_usd": 0.2755013,
+      "seconds": 103,
+      "stderr": "Ignoring 6 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects[\"/tmp/shipyard-rec/shipyard-03-rrl8qzq_/shipyard\"].hasTrustDialogAccepted: true in /home/deploy/.claude.json.\n",
+      "session_id": "79d81b13-3480-47ac-9e0d-cdc79a416d0b",
+      "cost_usd": 0.2592237,
       "turns": 10,
-      "duration_ms": 128624,
+      "duration_ms": 73648,
       "result_subtype": "success"
     }
   ],
   "git-status": 0,
   "git-diff-stat": 0,
-  "verify": 1
+  "verify": 0
 }

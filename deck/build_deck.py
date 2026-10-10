@@ -78,7 +78,7 @@ class Deck:
             p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
             p.alignment = align
             r = p.add_run()
-            r.text = line
+            r.text = line if font == MONO else line.replace("`", "")
             r.font.size, r.font.bold, r.font.name, r.font.color.rgb = Pt(size), bold, font, color
         return t
 
@@ -101,7 +101,7 @@ class Deck:
             p.alignment = PP_ALIGN.LEFT
             p.space_after = Pt(4 if mono else 8)
             r = p.add_run()
-            r.text = line
+            r.text = line if mono else line.replace("`", "")
             r.font.size, r.font.name, r.font.color.rgb = Pt(size), MONO if mono else SANS, color
         return b
 
@@ -147,11 +147,15 @@ class Deck:
         rows, cols = len(d["rows"]) + 1, len(d["header"])
         h = min(SH - y - Inches(0.5), Inches(0.52) * rows)
         tbl = s.shapes.add_table(rows, cols, Inches(0.7), y, Inches(11.9), h).table
+        tbl.first_row = False
+        tbl.horz_banding = False
         widths = d.get("widths")
         if not widths:
             longest = [max(len(str(r[c])) for r in [d["header"], *d["rows"]]) for c in range(cols)]
-            total = sum(max(6, l) for l in longest)
-            widths = [max(6, l) / total for l in longest]
+            words = [max(len(w) for r in [d["header"], *d["rows"]] for w in (str(r[c]).split() or [""])) for c in range(cols)]
+            raw = [max(8, l, words[c] * 1.6) for c, l in enumerate(longest)]
+            widths = [max(0.12, r / sum(raw)) for r in raw]
+            widths = [w / sum(widths) for w in widths]
         for c, wf in enumerate(widths):
             tbl.columns[c].width = int(Inches(11.9) * wf)
         size = 16 if rows <= 7 else 14
@@ -165,7 +169,7 @@ class Deck:
                 tf.word_wrap = True
                 p = tf.paragraphs[0]
                 run = p.add_run()
-                run.text = str(d["header"][c] if r == 0 else d["rows"][r - 1][c])
+                run.text = str(d["header"][c] if r == 0 else d["rows"][r - 1][c]).replace("`", "")
                 run.font.size = Pt(size)
                 run.font.name = SANS
                 run.font.bold = r == 0 or c == 0
@@ -193,7 +197,8 @@ class Deck:
             p.alignment = PP_ALIGN.CENTER
             r = p.add_run()
             r.text = step
-            r.font.size, r.font.bold, r.font.name, r.font.color.rgb = Pt(19), True, SANS, LIME
+            r.font.size, r.font.bold, r.font.name, r.font.color.rgb = Pt(15 if n > 4 else 18), True, SANS, LIME
+            tf.word_wrap = False
         self.text(s, d.get("sub", ""), Inches(0.7), y + Inches(2.1), Inches(11.9), Inches(1.4), 22, MUTED)
 
     def picture(self, s, path, x, y, w, h):
@@ -227,7 +232,9 @@ class Deck:
                  "CLICK THE VIDEO to play. Click again to pause for questions. Then → for what the evidence shows.\n"
                  f"Fallback if playback fails: open videos/{video.name} in VLC or a browser.")
         s = self.slide(notes, decorate=False)
-        if not video.exists():
+        probe = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(video)],
+                               capture_output=True, text=True) if video.exists() else None
+        if probe is None or probe.returncode != 0 or not probe.stdout.strip():
             self.text(s, f"VIDEO PENDING: videos/{video.name}", Inches(0.7), Inches(3.3), Inches(11.9), Inches(0.8), 30, YEL, True)
             return
         POSTERS.mkdir(exist_ok=True)

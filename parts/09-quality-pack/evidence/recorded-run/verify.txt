@@ -1,4 +1,4 @@
-[1mVerifying /tmp/shipyard-rec/shipyard-09-h9hqp3uf/shipyard[0m
+[1mVerifying /tmp/shipyard-rec/shipyard-09-fqdofu_z/shipyard[0m
   [32mPASS[0m  python test suite
   [32mPASS[0m  dashboard test suite
   [32mPASS[0m  AC1 add prints id
