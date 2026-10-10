@@ -88,8 +88,9 @@ def prompts(p: dict) -> str:
 
 def video_seconds(slug: str) -> str:
     import subprocess
+    import shutil
     video = ROOT / "videos" / f"{slug}.mp4"
-    if not video.exists():
+    if not video.exists() or not shutil.which("ffprobe"):
         return "–"
     out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(video)],
                          capture_output=True, text=True).stdout.strip()
