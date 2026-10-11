@@ -255,7 +255,7 @@ CONCEPTS = {
         {"type": "code", "kicker": "Hooks as engineering controls", "title": "Block unsafe commands, test after every edit",
          "code": "PreToolUse   matcher: Bash\n  → .claude/hooks/block-unsafe-commands.sh   (exit 2 = block, reason → Claude)\n\nPostToolUse  matcher: Edit|Write\n  → .claude/hooks/post-edit-validate.sh      (runs the tests for the edited file)\n\n# in .claude/settings.json → \"hooks\": { \"PreToolUse\": [...], \"PostToolUse\": [...] }\n# command paths start with \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/",
          "caption": "Exit 2 blocks and sends stderr to Claude. Exit 1 does not block.",
-         "notes": "Hooks are deterministic. The PreToolUse hook denies a force push before it runs. The PostToolUse hook runs the relevant tests after every edit and feeds failures back. Exit code 2 is the one that blocks."},
+         "notes": "Hooks are deterministic. The PreToolUse hook denies a force push, a hard reset or a secret read before the command runs: in the recording you will see it stop `cat .env`, which the permission rules would have allowed. The PostToolUse hook runs the relevant tests after every edit and feeds failures back. Exit code 2 is the one that blocks."},
         {"type": "code", "kicker": "Specialist subagent", "title": ".claude/agents/security-reviewer.md",
          "code": "---\nname: security-reviewer\ndescription: Read-only application security specialist ...\ntools: Read, Grep, Glob\nmodel: sonnet\n---\nReturn severity-ranked findings, each with file:line,\nquoted evidence and a concrete fix. Never edit files.",
          "caption": "Fresh context · restricted tools · structured output contract",

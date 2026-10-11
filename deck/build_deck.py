@@ -84,7 +84,8 @@ class Deck:
 
     def heading(self, s, kicker, title, y=Inches(0.95), size=34):
         self.text(s, kicker.upper(), Inches(0.7), y, Inches(11.5), Inches(0.35), 13, LIME, True)
-        lines = max(1, sum(1 + len(l) // 52 for l in title.split("\n")))
+        per_line = int(52 * 34 / size)
+        lines = max(1, sum(1 + len(l) // per_line for l in title.split("\n")))
         self.text(s, title, Inches(0.7), y + Inches(0.45), Inches(11.9), Inches(0.6) * lines, size, TXT, True)
         return y + Inches(0.45) + Inches(0.62) * lines + Inches(0.15)
 
@@ -134,7 +135,7 @@ class Deck:
 
     def s_code(self, d):
         s = self.slide(d["notes"])
-        y = self.heading(s, d["kicker"], d["title"], size=30)
+        y = self.heading(s, d["kicker"], d["title"], size=30 if len(d["title"]) <= 48 else 25)
         lines = d["code"].split("\n")
         longest = max(map(len, lines))
         size = 20 if len(lines) <= 10 and longest <= 62 else 17 if len(lines) <= 14 and longest <= 70 else 14
