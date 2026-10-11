@@ -396,7 +396,7 @@ PARTS = [
         ],
         "evidence": ["Stored XSS proven at runtime", "Bind 0.0.0.0 + CORS * proven by the probe",
                      "Oversized request blocks a worker", "Top 3 fixes with owners and verification",
-                     "Decision: Conditional go"],
+                     "A Go / Conditional go / No-go decision with reasons"],
         "discussion": [
             "Which finding would you have missed without runtime evidence?",
             "What turns a speculative concern into a verified finding?",

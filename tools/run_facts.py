@@ -7,12 +7,12 @@ import re
 from pathlib import Path
 
 ANSI = re.compile(r"\x1b\[[0-9;]*m")
-TEST_LINE = re.compile(r"(Ran \d+ tests?[^\n]*|# pass \d+|# fail \d+|^OK$|FAILED \([^)]*\))", re.M)
+TEST_LINE = re.compile(r"(Ran \d+ tests? in [\d.]+s|# pass \d+|# fail \d+|FAILED \([^)]*\))")
 
 
 def facts(evidence: Path) -> dict:
     summary = json.loads((evidence / "summary.json").read_text())
-    tools, test_lines = 0, []
+    tools, test_lines, bash_ids = 0, [], set()
     for turn_file in sorted(evidence.glob("turn*.jsonl")):
         for line in turn_file.read_text().splitlines():
             try:
@@ -23,9 +23,10 @@ def facts(evidence: Path) -> dict:
             content = msg.get("content") if isinstance(msg, dict) else None
             if e.get("type") == "assistant" and isinstance(content, list):
                 tools += sum(1 for b in content if b.get("type") == "tool_use")
+                bash_ids.update(b.get("id") for b in content if b.get("type") == "tool_use" and b.get("name") == "Bash")
             if e.get("type") == "user" and isinstance(content, list):
                 for b in content:
-                    if b.get("type") == "tool_result":
+                    if b.get("type") == "tool_result" and b.get("tool_use_id") in bash_ids:
                         text = b["content"] if isinstance(b["content"], str) else json.dumps(b["content"])
                         found = [m.group(0) for m in TEST_LINE.finditer(text.replace("\\n", "\n"))]
                         if any(f.startswith(("Ran", "# pass")) for f in found):

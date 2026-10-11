@@ -41,7 +41,7 @@ Run the review on your own project. Every High finding needs a command and its o
 - Bind 0.0.0.0 + CORS * proven by the probe
 - Oversized request blocks a worker
 - Top 3 fixes with owners and verification
-- Decision: Conditional go
+- A Go / Conditional go / No-go decision with reasons
 
 ## Discussion
 - Which finding would you have missed without runtime evidence?

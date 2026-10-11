@@ -253,7 +253,7 @@ CONCEPTS = {
          "caption": "Description drives discovery · $ARGUMENTS passes input · supporting files load only when linked",
          "notes": "Only the description sits in context until the skill fires. The body and supporting files load progressively. Arguments arrive in $ARGUMENTS. context: fork runs it as a subagent."},
         {"type": "code", "kicker": "Hooks as engineering controls", "title": "Block unsafe commands, test after every edit",
-         "code": "\"PreToolUse\":  [{ \"matcher\": \"Bash\",\n   \"hooks\": [{ \"type\": \"command\",\n     \"command\": \"\\\"$CLAUDE_PROJECT_DIR\\\"/.claude/hooks/block-unsafe-commands.sh\" }]}],\n\"PostToolUse\": [{ \"matcher\": \"Edit|Write\",\n   \"hooks\": [{ \"type\": \"command\",\n     \"command\": \"\\\"$CLAUDE_PROJECT_DIR\\\"/.claude/hooks/post-edit-validate.sh\" }]}]",
+         "code": "PreToolUse   matcher: Bash\n  → .claude/hooks/block-unsafe-commands.sh   (exit 2 = block, reason → Claude)\n\nPostToolUse  matcher: Edit|Write\n  → .claude/hooks/post-edit-validate.sh      (runs the tests for the edited file)\n\n# in .claude/settings.json → \"hooks\": { \"PreToolUse\": [...], \"PostToolUse\": [...] }\n# command paths start with \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/",
          "caption": "Exit 2 blocks and sends stderr to Claude. Exit 1 does not block.",
          "notes": "Hooks are deterministic. The PreToolUse hook denies a force push before it runs. The PostToolUse hook runs the relevant tests after every edit and feeds failures back. Exit code 2 is the one that blocks."},
         {"type": "code", "kicker": "Specialist subagent", "title": ".claude/agents/security-reviewer.md",

@@ -129,13 +129,15 @@ class Deck:
     def s_bullets(self, d):
         s = self.slide(d["notes"])
         y = self.heading(s, d["kicker"], d["title"])
-        self.panel_text(s, ["•  " + b for b in d["bullets"]], Inches(0.7), y, Inches(11.9), SH - y - Inches(0.6), 21, color=TXT)
+        lines = [b if b.startswith("✓") else "•  " + b for b in d["bullets"]]
+        self.panel_text(s, lines, Inches(0.7), y, Inches(11.9), SH - y - Inches(0.6), 22, color=TXT)
 
     def s_code(self, d):
         s = self.slide(d["notes"])
         y = self.heading(s, d["kicker"], d["title"], size=30)
         lines = d["code"].split("\n")
-        size = 17 if len(lines) <= 9 and max(map(len, lines)) <= 78 else 14
+        longest = max(map(len, lines))
+        size = 20 if len(lines) <= 9 and longest <= 70 else 17 if len(lines) <= 12 and longest <= 80 else 14
         h = SH - y - Inches(1.1 if d.get("caption") else 0.6)
         self.panel_text(s, lines, Inches(0.7), y, Inches(11.9), h, size, mono=True, color=LIME)
         if d.get("caption"):
@@ -206,7 +208,14 @@ class Deck:
 
     def picture(self, s, path, x, y, w, h):
         from PIL import Image
-        iw, ih = Image.open(path).size
+        img = Image.open(path)
+        iw, ih = img.size
+        if ih > iw * 1.05:
+            keep = min(ih, int(iw * (844 / 390 if iw < 600 else 0.72)))
+            POSTERS.mkdir(exist_ok=True)
+            path = POSTERS / f"crop-{Path(path).parent.name}-{Path(path).name}"
+            img.crop((0, 0, iw, keep)).save(path)
+            iw, ih = iw, keep
         scale = min(w / iw, h / ih)
         pw, ph = int(iw * scale), int(ih * scale)
         s.shapes.add_picture(str(path), x + (w - pw) // 2, y, pw, ph)
@@ -285,9 +294,9 @@ class Deck:
                 right.append("Tests seen in the run: " + " · ".join(f["tests"]))
             right.append(f"bin/bootcamp verify: {f['verify_pass']} PASS · {f['verify_fail']} FAIL" +
                          (f" ({'; '.join(f['fail_names'])})" if f["fail_names"] else ""))
-            changed = [c.strip() for c in f["changed"]][:6]
+            changed = [c.strip() for c in f["changed"]][:4]
             if changed:
-                right.append("Changed: " + ", ".join(changed) + (" …" if len(f["changed"]) > 6 else ""))
+                right.append("Changed: " + ", ".join(changed) + (f" … (+{len(f['changed']) - 4})" if len(f["changed"]) > 4 else ""))
             notes += f" The run took {mins} minutes {secs} seconds and cost {f['cost']:.2f} dollars."
             if f["verify_fail"]:
                 notes += " Note the failing check: " + "; ".join(f["fail_names"]) + ". We discuss why rather than hide it."
@@ -343,7 +352,7 @@ EXTRA_EVIDENCE_NOTES = {
 }
 
 
-def wrap_prompt(prompt: str, width: int = 86) -> str:
+def wrap_prompt(prompt: str, width: int = 68) -> str:
     import textwrap
     return "\n".join(textwrap.wrap(prompt, width))
 
