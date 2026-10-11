@@ -72,7 +72,7 @@ point cites a command and its real output, or a file and line.
 
 | # | Check    | Result | Evidence |
 |---|----------|--------|----------|
-| 1 | Scope    | PASS   | Only `notes_api/service.py`, `tests/test_service.py` changed; both in scope |
+| 1 | Scope    | PASS   | Only `notes_api/service.py`, `tests/test_partial_update.py` changed; both in scope |
 | 2 | Diff     | ...    | ... |
 | 3 | Tests    | ...    | `python3 -m unittest discover -s tests -q` -> `Ran 24 tests ... OK` |
 | 4 | Security | ...    | ... |

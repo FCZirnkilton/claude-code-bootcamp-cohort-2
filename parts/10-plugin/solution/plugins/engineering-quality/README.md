@@ -29,8 +29,7 @@ plugins/engineering-quality/
 ├── skills/
 │   ├── change-review/{SKILL.md,checklist.md}
 │   └── security-review/{SKILL.md,checklist.md}
-├── README.md
-└── VALIDATION.txt
+└── README.md
 ```
 
 ## 1. Validate
@@ -40,12 +39,11 @@ From the repository root:
 ```bash
 claude plugin validate ./plugins/engineering-quality --strict   # the plugin
 claude plugin validate . --strict                               # the marketplace in .claude-plugin/marketplace.json
-python3 -m unittest discover -s skills-pack/hooks/tests -v      # hook behaviour + plugin/pack copies in sync
 ```
 
 `--strict` turns warnings (unknown fields, unquoted `${CLAUDE_PLUGIN_ROOT}`, missing
 metadata) into failures. Use it in CI. The last recorded output is in
-[VALIDATION.txt](VALIDATION.txt).
+[evidence/plugin-validate.txt](../../evidence/plugin-validate.txt).
 
 ## 2. Test locally without installing
 

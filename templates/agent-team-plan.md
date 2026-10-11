@@ -93,9 +93,9 @@ Each file has exactly one writer. Shared files are owned by the lead or changed 
 | Path | Owner | Others may |
 |---|---|---|
 | `notes_api/**` | Backend owner | read |
-| `dashboard/components/release-notes.js`, `dashboard/api.js` | Frontend owner | read |
-| `tests/test_release_notes.py`, `evidence/p9c/` | Test owner | read |
-| `docs/api-contract.md` | Lead | read |
+| `dashboard/js/release-notes.js`, `dashboard/js/main.js`, `dashboard/index.html`, `dashboard/styles.css` | Frontend owner | read |
+| `tests/test_release_notes.py`, `dashboard/tests/release-notes.test.mjs`, `evidence/` | Test owner | read |
+| `docs/team-plan.md` (frozen contract) | Lead | read |
 
 **3. Tasks.**
 

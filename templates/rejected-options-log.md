@@ -36,7 +36,7 @@
 | Date | 2026-10-14 |
 | Engineer of record | Dana Ruiz |
 | Selected option | B: layered router -> service -> SQLite repository (weighted 4.20) |
-| Decision matrix | `docs/decisions/notes-api-matrix.md` |
+| Decision matrix | `decision/decision-matrix.md` |
 
 ### Rejected option: A, single-module JSON file store
 

@@ -45,6 +45,6 @@
 | 4 | Security | Pass | No new imports or dependencies. `_body()` validation is unchanged and still enforces type and length. The grep for secrets in the diff returned nothing. |
 | 5 | Runtime | Pass | `curl -s -X PATCH localhost:8000/api/notes/1 -H 'Content-Type: application/json' -d '{"title":"Release v1.4.1"}'` returned body `"Rollback plan: redeploy v1.3"` (saved in `evidence/bug-101-curl.txt`). |
 | 6 | Rollback | Pass | Branch `fix/bug-101` with one commit, `a91d0e2`. `main` is untouched at `7c4b2f0`. `git status` is clean. |
-| 7 | Handoff | Pass | The diagnosis record is in `docs/diagnosis/BUG-101.md`. Known gap: there is no test for PATCH with unknown fields; it is logged as a follow-up for the backend owner. |
+| 7 | Handoff | Pass | The diagnosis record is in `docs/diagnosis-bug-101.md`. Known gap: there is no test for PATCH with unknown fields; it is logged as a follow-up for the backend owner. |
 
 **Decision:** merge. **Signed:** Dana Ruiz.

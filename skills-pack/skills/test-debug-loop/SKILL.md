@@ -121,4 +121,4 @@ Run `/change-review` before merge. Remaining risks: <list or "none known">.
    same assertion.
 4. Fix: merge the existing note's fields before applying updates (+3 / -1).
 5. Regression test passes; full suite `Ran 19 tests` / `OK`; `git diff --stat`
-   shows `notes_api/service.py` and `tests/test_service.py` only.
+   shows `notes_api/service.py` and `tests/test_partial_update.py` only.

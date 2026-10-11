@@ -63,12 +63,13 @@ The release dashboard was handed from Dana Ruiz to Sam Okafor at commit `e41b7d2
 
 | Part | Path | Responsibility | Depends on |
 |---|---|---|---|
-| Entry | `dashboard/index.html`, `dashboard/main.js` | Layout and boot; wires components | components, `api.js` |
-| API client | `dashboard/api.js` | All `fetch` calls; error normalization | Notes API at `:8000` |
-| Components | `dashboard/components/summary.js`, `task-list.js`, `note-form.js` | Render one region each; four states (loading, empty, error, populated) | none (pure render) |
+| Entry | `dashboard/index.html`, `dashboard/js/main.js` | Layout and boot; owns state, wires events | `render.js`, `api.js` |
+| API client | `dashboard/js/api.js` | All `fetch` calls; error normalization | Notes API at `:8000` |
+| Rendering | `dashboard/js/render.js` | One function per page region (KPIs, tasks, tags, notes) | `logic.js` |
+| Rules | `dashboard/js/logic.js` | Pure rules: overdue, filters, KPIs, escaping (node --test) | none |
 | Styles | `dashboard/styles.css` | Layout, breakpoints at 768 and 1280 px | none |
 
-**Data flow:** `main.js` calls `api.js`. The results go to the components, which render into the DOM. User actions call `api.js` and then re-render the affected components.
+**Data flow:** `main.js` calls `api.js`. The results go into `state` and to `render.js`, which renders each region into the DOM. User actions update `state`, call `api.js` if needed, and then re-render the affected regions.
 
 **Key decisions:** no framework and no build step (see `CLAUDE.md`). All network access goes through `api.js`.
 

@@ -72,7 +72,7 @@ Use the DevTools device toolbar (Ctrl+Shift+M, or Cmd+Shift+M on macOS).
 **Setup.**
 - App: `http://localhost:8080`, started with `python3 -m http.server 8080 -d dashboard`.
 - Backend: `python3 -m notes_api.server` on port 8000.
-- Commit under test: `5e8a1c3`. Browser: Chrome 130. Evidence folder: `evidence/p7/`.
+- Commit under test: `5e8a1c3`. Browser: Chrome 130. Evidence folder: `evidence/`.
 
 | # | Flow | Expected | Result | Evidence |
 |---|---|---|---|---|
