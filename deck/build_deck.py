@@ -137,7 +137,7 @@ class Deck:
         y = self.heading(s, d["kicker"], d["title"], size=30)
         lines = d["code"].split("\n")
         longest = max(map(len, lines))
-        size = 20 if len(lines) <= 9 and longest <= 70 else 17 if len(lines) <= 12 and longest <= 80 else 14
+        size = 20 if len(lines) <= 10 and longest <= 62 else 17 if len(lines) <= 14 and longest <= 70 else 14
         h = SH - y - Inches(1.1 if d.get("caption") else 0.6)
         self.panel_text(s, lines, Inches(0.7), y, Inches(11.9), h, size, mono=True, color=LIME)
         if d.get("caption"):
@@ -352,7 +352,7 @@ EXTRA_EVIDENCE_NOTES = {
 }
 
 
-def wrap_prompt(prompt: str, width: int = 68) -> str:
+def wrap_prompt(prompt: str, width: int = 60) -> str:
     import textwrap
     return "\n".join(textwrap.wrap(prompt, width))
 
