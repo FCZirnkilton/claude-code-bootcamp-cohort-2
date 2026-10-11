@@ -145,7 +145,10 @@ class Deck:
         s = self.slide(d["notes"])
         y = self.heading(s, d["kicker"], d["title"], size=30)
         rows, cols = len(d["rows"]) + 1, len(d["header"])
-        h = min(SH - y - Inches(0.5), Inches(0.52) * rows)
+        bottom = Inches(1.0) if d.get("caption") else Inches(0.5)
+        h = min(SH - y - bottom, Inches(0.52) * rows)
+        if d.get("caption"):
+            self.text(s, d["caption"], Inches(0.7), SH - Inches(0.85), Inches(11.9), Inches(0.4), 14, MUTED)
         tbl = s.shapes.add_table(rows, cols, Inches(0.7), y, Inches(11.9), h).table
         tbl.first_row = False
         tbl.horz_banding = False
@@ -230,7 +233,8 @@ class Deck:
         notes = (f"VIDEO · Part {part['n']:02d} · {part['video']}\n"
                  "Say first: “This is a recording of a real run of the exact prompts on the previous slide. Tool calls and output are real; long runs are condensed.”\n"
                  "CLICK THE VIDEO to play. Click again to pause for questions. Then → for what the evidence shows.\n"
-                 f"Fallback if playback fails: open videos/{video.name} in VLC or a browser.")
+                 f"Fallback if playback fails: open videos/{video.name} in VLC or a browser."
+                 + ("\nThis video covers prompt 1 only: Claude in Chrome cannot run headless. Do prompt 2 live with `claude --chrome`, or show the captured screenshots on the next slides." if part["n"] == 7 else ""))
         s = self.slide(notes, decorate=False)
         probe = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(video)],
                                capture_output=True, text=True) if video.exists() else None
@@ -292,27 +296,35 @@ class Deck:
                         "left": ("What to look for", p["evidence"]), "right": ("What the recorded run produced", right),
                         "notes": notes})
 
-    def s_break(self, label, start, end, minutes):
+    def s_break(self, label, start, end, minutes, after):
         self.s_section({"kicker": f"{start}–{end}", "title": f"{label} · {minutes} minutes",
-                        "sub": "Behind? bin/bootcamp checkpoint <next part - 1> --force", "notes": BREAK_NOTES[label]})
+                        "sub": f"Behind? bin/bootcamp checkpoint {after:02d} --force  ·  next: Part {after + 1:02d}",
+                        "notes": BREAK_NOTES[label]})
 
     def build(self):
         for d in INTRO:
             getattr(self, f"s_{d['type']}")(d)
-        agenda = [[s + "–" + e, (b["title"] if k == "part" else b), str(m) + " min"] for k, b, s, e, m in schedule()]
-        self.s_table({"kicker": "Exact schedule", "title": "Today, minute by minute", "header": ["Time", "Session", "Length"],
-                      "rows": agenda, "widths": [0.18, 0.67, 0.15],
-                      "notes": "This is the exact schedule from the brief: 450 minutes including breaks and lunch."})
+        agenda = [[s + "–" + e, (f"Part {b['n']:02d} · {b['title']}" if k == "part" else b), str(m) + " min"]
+                  for k, b, s, e, m in schedule()]
+        cut = next(i for i, r in enumerate(agenda) if r[1] == "Lunch") + 1
+        for label, rows in (("morning", agenda[:cut]), ("afternoon", agenda[cut:])):
+            self.s_table({"kicker": f"Exact schedule · {label}", "title": "Today, minute by minute", "header": ["Time", "Session", "Length"],
+                          "rows": rows, "widths": [0.18, 0.67, 0.15],
+                          "notes": f"This is the exact {label} schedule from the brief. The whole day is 450 minutes including breaks and lunch."})
+        last = 0
         for kind, b, start, end, minutes in schedule():
             if kind == "part":
                 self.part(b, start, end)
+                last = b["n"]
             elif kind == "break":
-                self.s_break(b, start, end, minutes)
+                self.s_break(b, start, end, minutes, last)
         for d in FINAL:
             getattr(self, f"s_{d['type']}")(d)
-        total = len(self.counters)
-        for i, s in enumerate(self.counters, start=1):
-            self.text(s, f"{i:03d} / {total}", Inches(11.4), Inches(7.05), Inches(1.4), Inches(0.3), 10, MUTED, align=PP_ALIGN.RIGHT)
+        slides = list(self.prs.slides)
+        total = len(slides)
+        index = {id(sl): n for n, sl in enumerate(slides, start=1)}
+        for s in self.counters:
+            self.text(s, f"{index[id(s)]:03d} / {total}", Inches(11.4), Inches(7.05), Inches(1.4), Inches(0.3), 10, MUTED, align=PP_ALIGN.RIGHT)
         self.prs.save(OUT)
         print(f"{OUT.relative_to(ROOT)}: {len(self.prs.slides)} slides, {OUT.stat().st_size / 1e6:.1f} MB")
 

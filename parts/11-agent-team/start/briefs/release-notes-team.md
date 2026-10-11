@@ -17,7 +17,7 @@ The dashboard shows the release notes for v1.4, grouped into sections, and anyon
 | Test & verification owner | `tests/test_release_notes.py`, `dashboard/tests/release-notes.test.mjs`, browser check | all suites green, browser evidence at 1280/390 px |
 
 ## Rules
-- Teammates require plan approval before editing. The lead rejects plans that touch files outside their ownership.
+- Teammates plan first, read-only. Note: Claude Code auto-approves a teammate's plan in the lead session without review, so the lead and the human read each plan and message any teammate whose plan strays outside its ownership.
 - The API contract above is frozen; frontend and tests build against it in parallel.
 - Quality gate before acceptance: full test suites, `/engineering-quality:change-review`, browser check.
 - No commits by teammates. The lead summarises; the human accepts.

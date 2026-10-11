@@ -17,7 +17,7 @@ File ownership is disjoint, so teammates never edit the same file. The only shar
 | Risk | Mitigation |
 |---|---|
 | Frontend builds against a different response shape | Contract frozen in T1; T6 asserts the exact shape |
-| Two teammates edit `main.js` / `server.py` | Ownership table; lead rejects out-of-scope plans |
+| Two teammates edit `main.js` / `server.py` | Ownership in each spawn prompt; plans are auto-approved, so the lead and the human read them and steer by message; per-file diff review |
 | Teammate reports "done" without evidence | `TaskCompleted` quality gate: task closes only with test output |
 | Token cost grows with each teammate | Three teammates max; Sonnet for teammates; stop idle teammates |
 | Task status lags behind reality | Lead checks the task list and messages the teammate directly |

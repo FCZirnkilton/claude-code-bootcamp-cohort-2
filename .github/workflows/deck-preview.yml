@@ -1,0 +1,42 @@
+name: deck-preview
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "deck/claude-code-bootcamp-cohort-2.pptx"
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LibreOffice, poppler, Pillow
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends libreoffice-impress poppler-utils fonts-dejavu python3-pil
+      - name: Render deck to PDF and contact sheets
+        run: |
+          mkdir -p preview
+          soffice --headless --convert-to pdf --outdir preview deck/claude-code-bootcamp-cohort-2.pptx
+          pdftoppm -r 40 -png preview/claude-code-bootcamp-cohort-2.pdf preview/s
+          python3 - <<'PY'
+          from PIL import Image
+          import glob
+          fs = sorted(glob.glob("preview/s-*.png"))
+          ims = [Image.open(f) for f in fs]
+          w, h = ims[0].size
+          cols = 4
+          for i in range(0, len(ims), 16):
+              chunk = ims[i:i + 16]
+              rows = -(-len(chunk) // cols)
+              sheet = Image.new("RGB", (cols * w + (cols + 1) * 6, rows * h + (rows + 1) * 6), "white")
+              for k, im in enumerate(chunk):
+                  sheet.paste(im, (6 + (k % cols) * (w + 6), 6 + (k // cols) * (h + 6)))
+              sheet.save(f"preview/sheet-{i // 16 + 1:02d}.png")
+          print(len(fs), "pages")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deck-preview
+          path: |
+            preview/sheet-*.png
+            preview/claude-code-bootcamp-cohort-2.pdf
