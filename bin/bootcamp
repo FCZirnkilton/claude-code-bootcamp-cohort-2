@@ -23,7 +23,7 @@ DEFAULT_STAGE = Path(os.environ.get("SHIPYARD_STAGE", Path.home() / "shipyard-st
 GREEN, RED, YELLOW, BOLD, RESET = "\033[32m", "\033[31m", "\033[33m", "\033[1m", "\033[0m"
 
 PY_TESTS = ["python3", "-m", "unittest", "discover", "-s", "tests", "-q"]
-JS_TESTS = ["node", "--test", "dashboard/tests/"]
+JS_TESTS = ["node", "--test"]
 
 
 def parts() -> list[Path]:
@@ -149,8 +149,10 @@ def checks_for(dest: Path) -> list[tuple[str, list[str], str | None]]:
     checks: list[tuple[str, list[str], str | None]] = []
     if (dest / "tests").is_dir():
         checks.append(("python test suite", PY_TESTS, None))
-    if (dest / "dashboard" / "tests").is_dir() and shutil.which("node"):
-        checks.append(("dashboard test suite", JS_TESTS, None))
+    js_tests = sorted(p.relative_to(dest).as_posix() for p in (dest / "dashboard" / "tests").glob("*.test.*"))
+    if js_tests and shutil.which("node"):
+        # Explicit files: some Node releases (e.g. v26.5.0) do not expand a directory argument.
+        checks.append(("dashboard test suite", JS_TESTS + js_tests, None))
     marker = dest / ".bootcamp" / "part"
     extra = dest / ".bootcamp" / "checks.txt"
     if marker.exists():

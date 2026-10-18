@@ -22,7 +22,7 @@ Only these, exactly as shown or with extra test selectors and flags:
 
 - `python3 -m unittest discover -s tests -q` (full Python suite)
 - `python3 -m unittest tests.<module>[.<Class>[.<test>]] -v` (one test)
-- `node --test dashboard/tests/` (dashboard suite, only if node is installed)
+- `node --test dashboard/tests/*.test.*` (dashboard suite, only if node is installed)
 - `git status --short`, `git diff --stat`, `git diff`, `git log --oneline -5`
 
 Do not chain commands (`;`, `&&`, `|`), redirect output, or use `$(...)`.
