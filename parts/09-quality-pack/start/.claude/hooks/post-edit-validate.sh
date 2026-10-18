@@ -73,7 +73,13 @@ case "$rel" in
     ;;
   dashboard/*.js|dashboard/*.mjs)
     if command -v node >/dev/null 2>&1 && [ -d dashboard/tests ]; then
-      run_suite "Dashboard tests" node --test dashboard/tests/*.test.*
+      # `node --test` does not walk a directory argument on every Node release, so list the test files.
+      shopt -s nullglob
+      suite=(dashboard/tests/*.test.*)
+      shopt -u nullglob
+      if [ -n "${suite[0]:-}" ]; then
+        run_suite "Dashboard tests" node --test "${suite[@]}"
+      fi
     fi
     ;;
   *)
