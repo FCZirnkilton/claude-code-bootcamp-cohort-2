@@ -135,7 +135,7 @@ def cmd_fallback(args: argparse.Namespace) -> None:
 
 def run_check(name: str, cmd: list[str], cwd: Path, expect: str | None = None) -> bool:
     proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True,
-                          env={**os.environ, "SHIPCTL_DB": str(cwd / ".verify-tasks.json")})
+                          env={**os.environ, "SHIPCTL_DB": str(cwd / ".verify-tasks.json"), "BOOTCAMP_ROOT": str(ROOT)})
     out = (proc.stdout + proc.stderr).strip()
     ok = proc.returncode == 0 and (expect is None or expect in out)
     mark = f"{GREEN}PASS{RESET}" if ok else f"{RED}FAIL{RESET}"

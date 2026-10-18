@@ -16,4 +16,4 @@ Skill and subagent present :: test -s .claude/skills/change-review/SKILL.md && t
 Plugin manifest is valid JSON with name :: python3 -c "import json;print(json.load(open('plugins/engineering-quality/.claude-plugin/plugin.json'))['name'])" :: engineering-quality
 Plugin validates (needs claude CLI) :: if command -v claude >/dev/null; then claude plugin validate ./plugins/engineering-quality --strict; else echo "Validation passed (skipped: no claude CLI)"; fi :: Validation passed
 Plugin hook scripts executable :: test -x plugins/engineering-quality/hooks/post-edit-validate.sh && test -x plugins/engineering-quality/hooks/block-unsafe-commands.sh && echo ok :: ok
-Release notes endpoint (service level) :: python3 -c "from notes_api.repository import NoteRepository as R; from notes_api.service import NoteService as S; from notes_api.releases import build_release_notes as b; s=S(R()); s.create({'title':'x','tags':['release:v1.4','backend']}); print(b(s,'v1.4')['sections'][0]['title'])" :: Backend
+Release notes API contract (HTTP) :: python3 "$BOOTCAMP_ROOT/tools/checks/release_notes_contract.py" :: contract ok
