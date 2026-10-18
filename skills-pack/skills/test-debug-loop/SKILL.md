@@ -23,7 +23,7 @@ from Claude's own claim that the bug is gone.
 
 - Python: `python3 -m unittest discover -s tests -q`
 - One Python test: `python3 -m unittest tests.test_service.ServiceTest.test_x -v`
-- Dashboard: `node --test dashboard/tests/`
+- Dashboard: `node --test dashboard/tests/*.mjs`
 
 ## Procedure
 

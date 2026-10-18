@@ -23,7 +23,7 @@ required report sections and their order are in
 1. **Baseline.** `git status --short`, `git log --oneline -5`. Note the commit
    being assessed. Uncommitted changes make the assessment provisional; say so.
 2. **Test evidence.** Run `python3 -m unittest discover -s tests -q` and, if a
-   dashboard exists and node is installed, `node --test dashboard/tests/`.
+   dashboard exists and node is installed, `node --test dashboard/tests/*.mjs`.
    Quote the summary lines. A failing suite is a High finding.
 3. **Reuse earlier evidence.** If `/change-review`, `/security-review`, or
    `/browser-verification` reports exist in this session or in `docs/`, cite them

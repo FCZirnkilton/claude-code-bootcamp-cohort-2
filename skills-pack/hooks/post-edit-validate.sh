@@ -3,7 +3,7 @@
 #
 # After Claude edits a file, run the test suite that covers it:
 #   *.py anywhere in the project          -> python3 -m unittest discover -s tests -q
-#   dashboard/**/*.js or *.mjs            -> node --test dashboard/tests/   (only if node exists)
+#   dashboard/**/*.js or *.mjs            -> node --test dashboard/tests/*.mjs   (only if node exists)
 #   anything else (Markdown, JSON, ...)   -> nothing runs, exit 0
 #
 # Exit 0 -> tests passed or were not relevant.
@@ -73,7 +73,13 @@ case "$rel" in
     ;;
   dashboard/*.js|dashboard/*.mjs)
     if command -v node >/dev/null 2>&1 && [ -d dashboard/tests ]; then
-      run_suite "Dashboard tests" node --test dashboard/tests/
+      # `node --test` does not walk a directory argument, so list the test files.
+      shopt -s nullglob
+      suite=(dashboard/tests/*.mjs dashboard/tests/*.js)
+      shopt -u nullglob
+      if [ -n "${suite[0]:-}" ]; then
+        run_suite "Dashboard tests" node --test "${suite[@]}"
+      fi
     fi
     ;;
   *)

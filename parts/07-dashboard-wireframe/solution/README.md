@@ -52,5 +52,5 @@ python3 -m notes_api.server        # http://localhost:8000/  (PORT, NOTES_DB, SH
 
 ```sh
 python3 -m unittest discover -s tests -q
-node --test dashboard/tests/
+node --test dashboard/tests/*.mjs
 ```

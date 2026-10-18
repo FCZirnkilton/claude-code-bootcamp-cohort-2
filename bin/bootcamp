@@ -23,7 +23,13 @@ DEFAULT_STAGE = Path(os.environ.get("SHIPYARD_STAGE", Path.home() / "shipyard-st
 GREEN, RED, YELLOW, BOLD, RESET = "\033[32m", "\033[31m", "\033[33m", "\033[1m", "\033[0m"
 
 PY_TESTS = ["python3", "-m", "unittest", "discover", "-s", "tests", "-q"]
-JS_TESTS = ["node", "--test", "dashboard/tests/"]
+
+
+def js_tests(dest: Path) -> list[str]:
+    """`node --test` does not walk a directory argument, so list the test files."""
+    tests = dest / "dashboard" / "tests"
+    files = sorted(tests.glob("*.mjs")) + sorted(tests.glob("*.js"))
+    return ["node", "--test", *(str(f.relative_to(dest)) for f in files)]
 
 
 def parts() -> list[Path]:
@@ -150,7 +156,9 @@ def checks_for(dest: Path) -> list[tuple[str, list[str], str | None]]:
     if (dest / "tests").is_dir():
         checks.append(("python test suite", PY_TESTS, None))
     if (dest / "dashboard" / "tests").is_dir() and shutil.which("node"):
-        checks.append(("dashboard test suite", JS_TESTS, None))
+        cmd = js_tests(dest)
+        if len(cmd) > 2:
+            checks.append(("dashboard test suite", cmd, None))
     marker = dest / ".bootcamp" / "part"
     extra = dest / ".bootcamp" / "checks.txt"
     if marker.exists():
