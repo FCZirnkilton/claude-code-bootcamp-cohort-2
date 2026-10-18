@@ -7,3 +7,10 @@ mock-test/results/
 .stage/
 deck/.posters/
 parts/*/evidence/recorded-run.new/
+
+# Instructor-only assessment files (kept locally, never committed)
+assessment/quiz-answer-key.md
+assessment/grading-sheet.csv
+
+# PowerPoint lock files
+~$*

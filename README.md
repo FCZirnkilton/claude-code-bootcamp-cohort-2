@@ -29,7 +29,7 @@ Requirements: Python 3.10+, Git, Node.js 18+ (dashboard tests), Claude Code (log
 | `skills-pack/` | The attendee Skills Pack: 8 skills, 2 subagents, 3 hooks, installer |
 | `plugins/engineering-quality/` + `.claude-plugin/marketplace.json` | The Part 10 plugin, installable from this repo as a marketplace |
 | `templates/` | Decision matrix, Rejected Options Log, Review Before Merge, readiness report, stakeholder update, routine brief and more |
-| `assessment/` | Quiz (30%), capstone (50%), reflection (20%), rubric, grading sheet |
+| `assessment/` | Quiz (30%), capstone (50%), reflection (20%), rubric (answer key and grading sheet are instructor-only, not in the repository) |
 | `mock-test/` | 60-question certification mock test with readiness report (`python3 mock-test/run.py`) |
 | `docs/` | `RUN-OF-SHOW.md`, `PRESENTER-CUE-CARD.md`, `FEATURE-REFERENCE.md` (verified Claude Code syntax), `BRIEF.md` (the original brief) |
 | `tools/` | Course data (single source of truth), runbook generator, run recorder |

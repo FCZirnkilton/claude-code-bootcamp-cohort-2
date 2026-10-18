@@ -13,7 +13,7 @@ Passing this assessment earns the **Packt Certificate of Completion**. The asses
 | Engineering reflection | Rejected approach, human checkpoint, and unresolved risk | 20% | 20 | [`reflection-template.md`](reflection-template.md), scored with [`rubric.md`](rubric.md) |
 | **Total** | | **100%** | **100** | |
 
-Instructors also use [`quiz-answer-key.md`](quiz-answer-key.md) (do not distribute it) and [`grading-sheet.csv`](grading-sheet.csv).
+Instructors also use `quiz-answer-key.md` and `grading-sheet.csv`. Both are kept out of the repository (see `.gitignore`) and are distributed to instructors separately.
 
 ## Passing criteria
 
